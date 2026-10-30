@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0c0c0c">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<title>Text nahlas · Knihovna</title>
+<style>
+:root{--paper:#f5f2eb;--ink:#252923;--muted:#686e64;--line:#d9d8cc;--green:#52684e;--pale:#e7eadf;--accent:#c86f52;--white:#fffdf8}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif}
+button,input{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+a{color:inherit}
+.wrap{max-width:1220px;margin:auto;padding:0 26px}
+header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}
+.logo{font:700 12px/1.2 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--green)}
+.nav{font:12px Arial,sans-serif;color:var(--muted)}
+.hero{padding:54px 0 38px;display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:30px;align-items:end}
+.kicker{font:11px Arial,sans-serif;text-transform:uppercase;letter-spacing:.18em;color:var(--accent)}
+h1{font-size:clamp(46px,7vw,82px);font-weight:400;line-height:.92;letter-spacing:-.055em;margin:16px 0}
+.hero p{max-width:620px;color:var(--muted);font:15px/1.7 Arial,sans-serif;margin:0}
+.stamp{width:150px;height:150px;border:1px solid #a7b09b;border-radius:50%;display:grid;place-items:center;text-align:center;color:var(--green);font:11px/1.5 Arial,sans-serif;letter-spacing:.08em;transform:rotate(8deg);margin:auto}
+.controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:18px 0 28px;border-top:1px solid var(--line)}
+.search{flex:1;min-width:190px;max-width:350px;border:1px solid var(--line);background:var(--white);padding:12px 15px;border-radius:3px;font:13px Arial,sans-serif;color:var(--ink);outline:none}
+.search:focus{border-color:var(--green)}
+.filter{background:transparent;border:1px solid var(--line);padding:11px 14px;border-radius:3px;color:var(--muted);font:12px Arial,sans-serif}
+.filter.active,.filter:hover{background:var(--green);color:white;border-color:var(--green)}
+.author{padding:12px 0 28px}
+.author-heading{display:flex;align-items:baseline;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line);padding:0 0 12px;margin-bottom:18px}
+.author-heading h2{font-size:29px;font-weight:400;letter-spacing:-.025em;margin:0}
+.author-heading span{font:10px Arial,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{min-width:0;background:var(--white);border:1px solid var(--line);border-radius:4px;overflow:hidden;transition:box-shadow .18s,border-color .18s}
+.card:hover{border-color:#a8b19f;box-shadow:0 8px 24px #2529230c}
+.cover{height:270px;position:relative;overflow:hidden;background:linear-gradient(145deg,#9eaa91,#465746);color:white;background-size:cover;background-position:center;display:flex;align-items:end;padding:22px;isolation:isolate}
+.cover:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#16251b08 15%,#152018c9 100%)}
+.cover:after{content:"";position:absolute;inset:12px;border:1px solid #ffffff69;pointer-events:none}
+.cover-label{position:absolute;top:23px;left:24px;font:10px Arial,sans-serif;text-transform:uppercase;letter-spacing:.13em;color:#fff9e9}
+.cover-text{max-width:100%}
+.cover-author{font:10px Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase;margin-bottom:9px;color:#f4e9ce}
+.cover h3{font-size:clamp(27px,2.5vw,36px);font-weight:400;line-height:.98;letter-spacing:-.03em;margin:0;text-wrap:balance}
+.card-body{padding:16px}
+.meta{display:flex;justify-content:space-between;gap:10px;font:10px Arial,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.summary{font:13px/1.55 Arial,sans-serif;color:#555d52;margin:12px 0 15px;min-height:40px}
+.player{border-top:1px solid var(--line);padding:12px 0;display:grid;grid-template-columns:35px minmax(0,1fr);gap:10px;align-items:center}
+.play{width:34px;height:34px;border:0;border-radius:50%;background:var(--green);color:white;display:grid;place-items:center;font:14px Arial,sans-serif}
+.play:focus-visible,.filter:focus-visible,.btn:focus-visible,.more:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.track{min-width:0}
+.trackline{height:4px;background:#e2e2d8;border-radius:10px;overflow:hidden;position:relative}
+.trackline span{display:block;width:0;height:100%;background:var(--accent)}
+.track-meta{display:flex;justify-content:space-between;gap:8px;margin-top:7px;font:10px Arial,sans-serif;color:var(--muted)}
+.audio-panel{display:none;background:var(--pale);padding:12px;margin:0 0 12px;border-radius:3px}
+.audio-panel.open{display:block}
+.audio-panel audio{width:100%;height:38px}
+.audio-message{font:11px/1.5 Arial,sans-serif;color:var(--muted);margin:5px 0 0}
+.actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;padding:10px 12px;border:1px solid var(--line);border-radius:3px;font:11px Arial,sans-serif;color:var(--ink);background:transparent}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{filter:brightness(.96)}
+.btn.disabled{color:#85887e;background:#f0eee7;cursor:default}
+.more{margin-left:auto;background:none;border:0;color:var(--green);font:12px Arial,sans-serif;padding:9px 0}
+.details{display:none;border-top:1px solid var(--line);margin-top:13px;padding-top:13px;font:13px/1.65 Arial,sans-serif;color:#555d52}
+.card.expanded .details{display:block}
+.details strong{display:block;font:10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 4px}
+.details p{margin:0 0 12px}
+.empty{display:none;padding:24px;border:1px dashed var(--line);color:var(--muted);font:13px Arial,sans-serif}
+footer{margin-top:35px;padding:30px 0 38px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:30px}
+footer h2{font-size:24px;font-weight:400;margin:9px 0}
+footer p{font:12px/1.65 Arial,sans-serif;color:var(--muted);max-width:430px;margin:0}
+.qr{margin-top:14px;width:90px;height:90px;border:1px dashed #a8b19f;display:grid;place-items:center;text-align:center;color:var(--green);font:10px/1.4 Arial,sans-serif}
+.email{display:inline-block;margin-top:13px;color:var(--green);font:13px Arial,sans-serif;text-decoration:none}
+.note{grid-column:1/-1;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 Arial,sans-serif}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr 125px}.stamp{width:112px;height:112px}.cover{height:240px}}
+@media(max-width:580px){.wrap{padding:0 16px}.hero{grid-template-columns:1fr;padding:38px 0 28px}.stamp{display:none}h1{font-size:58px}.grid{grid-template-columns:1fr}.cover{height:300px}.cover h3{font-size:38px}.author-heading h2{font-size:25px}.nav{max-width:120px;text-align:right}footer{grid-template-columns:1fr}.note{grid-column:auto}}
+
+/* ── Text nahlas: vizuální jazyk podle Chceš myš? ── */
+:root{
+  --paper:#0c0c0c;
+  --ink:#e8e0d0;
+  --muted:rgba(232,224,208,.42);
+  --line:rgba(168,152,128,.16);
+  --green:#a89880;
+  --pale:#1a1a1a;
+  --accent:#a89880;
+  --white:#141414;
+  --surface2:#1a1a1a;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--mono);font-size:13px;line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1100px;padding:0 32px}
+header{
+  position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:calc(100% - 64px);max-width:1036px;height:56px;z-index:200;
+  padding:0;gap:24px;background:rgba(12,12,12,.96);
+  backdrop-filter:blur(16px);border-bottom:1px solid var(--line);
+}
+.logo{
+  font-family:var(--serif);font-size:18px;font-weight:300;
+  letter-spacing:.04em;text-transform:none;color:var(--ink);
+}
+.nav{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+}
+.hero{
+  padding:150px 0 72px;min-height:72vh;
+  grid-template-columns:minmax(0,1fr) 260px;gap:64px;
+  border-bottom:1px solid var(--line);align-items:end;
+}
+.kicker{
+  display:flex;align-items:center;gap:10px;
+  font:10px/1.5 var(--mono);letter-spacing:.24em;
+  text-transform:uppercase;color:var(--accent);
+}
+.kicker::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent)}
+h1{
+  font-family:var(--serif);font-size:clamp(64px,9vw,104px);
+  font-weight:300;line-height:.9;letter-spacing:-.035em;
+  margin:20px 0 26px;color:var(--ink);
+}
+.hero p{
+  max-width:480px;color:var(--muted);
+  font:12px/1.9 var(--mono);padding-left:20px;
+  border-left:1px solid var(--line);
+}
+.stamp{
+  width:100%;height:auto;min-height:190px;border:1px solid rgba(168,152,128,.22);
+  border-radius:0;transform:none;margin:0;padding:26px;
+  display:flex;flex-direction:column;justify-content:center;
+  background:var(--white);color:var(--accent);
+  font:10px/2 var(--mono);letter-spacing:.2em;
+  text-align:left;position:relative;
+}
+.stamp::before{
+  content:"POSLECHOVÁ KNIHOVNA";position:absolute;top:-1px;left:18px;
+  padding:2px 8px;background:var(--accent);color:var(--paper);
+  font:9px/1.6 var(--mono);letter-spacing:.14em;
+}
+.controls{
+  gap:2px;padding:20px 0 28px;border-top:0;border-bottom:1px solid var(--line);
+}
+.search{
+  flex:1;min-width:180px;max-width:360px;padding:12px 14px;
+  border:1px solid var(--line);border-radius:0;background:var(--white);
+  color:var(--ink);font:11px var(--mono);
+}
+.search::placeholder{color:var(--muted)}
+.search:focus{border-color:var(--accent)}
+.filter{
+  border:1px solid var(--line);border-radius:0;padding:11px 13px;
+  background:transparent;color:var(--muted);
+  font:10px var(--mono);letter-spacing:.06em;
+}
+.filter.active,.filter:hover{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.author{padding:56px 0 20px}
+.author-heading{
+  border-bottom:1px solid var(--line);padding:0 0 18px;margin-bottom:24px;
+}
+.author-heading h2{
+  font:300 clamp(32px,4vw,44px)/1.1 var(--serif);
+  letter-spacing:0;color:var(--ink);margin:0;
+}
+.author-heading span{
+  font:9px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+}
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:2px}
+.card{
+  border:1px solid var(--line);border-radius:0;background:var(--white);
+  box-shadow:none;transition:border-color .2s;overflow:hidden;
+}
+.card:hover{border-color:var(--accent);box-shadow:none}
+.cover{
+  height:auto;aspect-ratio:3/4;max-height:340px;
+  padding:18px;background-size:cover;background-position:center;
+  filter:none;position:relative;
+}
+.cover::before{
+  background:linear-gradient(to top,rgba(20,20,20,.94) 0%,rgba(20,20,20,.2) 62%,rgba(20,20,20,.05) 100%);
+}
+.cover::after{inset:10px;border:1px solid rgba(232,224,208,.22)}
+.cover-label{
+  top:22px;left:22px;font:9px var(--mono);letter-spacing:.14em;
+  color:rgba(232,224,208,.6);
+}
+.cover-author{
+  font:9px var(--mono);letter-spacing:.16em;color:var(--accent);margin-bottom:10px;
+}
+.cover h3{
+  font:300 clamp(28px,3vw,39px)/.98 var(--serif);
+  letter-spacing:-.015em;color:var(--ink);
+}
+.card-body{padding:18px}
+.meta{
+  font:9px var(--mono);letter-spacing:.12em;color:var(--muted);
+}
+.summary{
+  min-height:56px;margin:14px 0 18px;
+  font:11px/1.8 var(--mono);color:rgba(232,224,208,.62);
+}
+.player{
+  border-top:1px solid var(--line);padding:14px 0;
+  grid-template-columns:36px minmax(0,1fr);gap:12px;
+}
+.play{
+  width:34px;height:34px;border-radius:0;background:var(--accent);
+  color:var(--paper);font:12px var(--mono);
+}
+.trackline{height:2px;background:rgba(168,152,128,.2);border-radius:0}
+.trackline span{background:var(--accent)}
+.track-meta{font:9px var(--mono);color:var(--muted)}
+.audio-panel{
+  background:var(--surface2);border:1px solid var(--line);
+  border-radius:0;padding:14px;margin-bottom:14px;
+}
+.audio-panel audio{filter:grayscale(1);max-width:100%}
+.audio-message{font:10px/1.7 var(--mono);color:var(--muted)}
+.btn{
+  border:1px solid var(--line);border-radius:0;padding:11px 13px;
+  background:transparent;color:var(--ink);font:9px var(--mono);
+  letter-spacing:.08em;text-transform:uppercase;
+}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.btn.disabled{background:transparent;color:rgba(232,224,208,.25)}
+.more{
+  color:var(--accent);font:10px var(--mono);letter-spacing:.04em;
+}
+.details{
+  border-top:1px solid var(--line);font:11px/1.8 var(--mono);
+  color:rgba(232,224,208,.62);
+}
+.details strong{
+  font:9px var(--mono);letter-spacing:.18em;color:var(--accent);
+}
+.empty{border:1px dashed var(--line);color:var(--muted);font:11px var(--mono)}
+footer{
+  margin-top:60px;padding:48px 0;border-top:1px solid var(--line);
+}
+footer h2{font:300 34px/1.15 var(--serif);color:var(--ink);margin:12px 0}
+footer p{font:11px/1.9 var(--mono);color:var(--muted)}
+.qr{
+  width:100px;height:100px;border:1px solid var(--line);border-radius:0;
+  color:var(--accent);font:9px/1.6 var(--mono);
+}
+.email{color:var(--accent);font:11px var(--mono)}
+.note{border-color:var(--line);font:9px/1.8 var(--mono);color:var(--muted)}
+button,a,input{font-family:var(--mono)}
+button:focus-visible,.btn:focus-visible,.more:focus-visible{outline:1px solid var(--accent);outline-offset:3px}
+@media(max-width:850px){
+  .hero{grid-template-columns:minmax(0,1fr) 200px;gap:28px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cover{max-height:none}
+}
+@media(max-width:580px){
+  .wrap{padding:0 16px}
+  header{width:calc(100% - 32px)}
+  .hero{grid-template-columns:1fr;min-height:auto;padding:118px 0 44px;gap:28px}
+  h1{font-size:68px}
+  .stamp{min-height:110px;padding:22px}
+  .grid{grid-template-columns:1fr}
+  .cover{aspect-ratio:4/3;height:auto;max-height:none}
+  .cover h3{font-size:38px}
+  .author{padding-top:42px}
+  .controls{align-items:stretch}
+  .search{max-width:none;flex-basis:100%}
+  .filter{flex:1;padding:10px 7px;font-size:9px}
+  footer{grid-template-columns:1fr}
+  .note{grid-column:auto}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">Text nahlas</div>
+  <div class="nav">Katalog audioknih · průběžně doplňováno</div>
+</header>
+<section class="hero">
+  <div>
+    <div class="kicker">Knihovna pro poslech</div>
+    <h1>Text<br>nahlas.</h1>
+    <p>Vyberte si knihu, poslechněte ukázku a otevřete si další informace přímo na její kartě. Katalog se bude postupně rozšiřovat.</p>
+  </div>
+  <div class="stamp">POSLOUCHAT<br>·<br>OBJEVOVAT<br>·<br>ČÍST UŠIMA</div>
+</section>
+<nav class="controls" aria-label="Filtrování knih">
+  <input id="search" class="search" type="search" placeholder="Hledat knihu nebo autora…" aria-label="Hledat knihu nebo autora">
+  <button class="filter active" data-filter="all">Všechny knihy</button>
+  <button class="filter" data-filter="terry">Terry Pratchett</button>
+  <button class="filter" data-filter="jonas">Jonas Jonasson</button>
+</nav>
+
+<section class="author" data-section="terry">
+  <div class="author-heading"><h2>Terry Pratchett</h2><span>Fantasy · humor</span></div>
+  <div class="grid">
+    <article class="card" data-author="terry" data-title="Svobodný národ" data-search="svobodný národ terry pratchett tiffany">
+      <div class="cover" style="background-image:linear-gradient(145deg,#55534e,#171717)">
+        <div class="cover-label">Obálka bude doplněna</div><div class="cover-text"><div class="cover-author">Terry Pratchett</div><h3>Svobodný národ</h3></div>
+      </div>
+      <div class="card-body">
+        <div class="meta"><span>Tiffany Bolavá</span><span>Zvuková ukázka</span></div>
+        <p class="summary">Stručný obsah knihy bude doplněn v rozhraní.</p>
+        <div class="player">
+          <button class="play" type="button" aria-label="Otevřít přehrávač">▶</button>
+          <div class="track"><div class="trackline"><span></span></div><div class="track-meta"><span class="time">Ukázka bude doplněna</span><span class="length">30 min*</span></div></div>
+        </div>
+        <div class="audio-panel">
+          <audio controls preload="none"></audio>
+          <p class="audio-message">Odkaz na WAV ukázku bude doplněn.</p>
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="https://drive.google.com/file/d/1NbuTYHVP7c7hEDWEKLh2QmfxplJUNUV4/view?usp=drivesdk" target="_blank" rel="noopener">↓ Stáhnout ZIP</a>
+          <button class="more" type="button" aria-expanded="false">Více o knize +</button>
+        </div>
+        <div class="details"><strong>O knize</strong><p>Obsah, poznámky a další informace budou doplněny v rozhraní.</p><strong>Zvuková ukázka</strong><p>Samostatný soubor WAV bude doplněn.</p></div>
+      </div>
+    </article>
+
+    <article class="card" data-author="terry" data-title="Klobouk s oblohou" data-search="klobouk s oblohou terry pratchett tiffany">
+      <div class="cover" style="background-image:linear-gradient(145deg,#62584c,#191817)">
+        <div class="cover-label">Obálka bude doplněna</div><div class="cover-text"><div class="cover-author">Terry Pratchett</div><h3>Klobouk s oblohou</h3></div>
+      </div>
+      <div class="card-body">
+        <div class="meta"><span>Tiffany Bolavá</span><span>Zvuková ukázka</span></div><p class="summary">Stručný obsah knihy bude doplněn v rozhraní.</p>
+        <div class="player"><button class="play" type="button" aria-label="Otevřít přehrávač">▶</button><div class="track"><div class="trackline"><span></span></div><div class="track-meta"><span class="time">Ukázka bude doplněna</span><span class="length">30 min*</span></div></div></div>
+        <div class="audio-panel"><audio controls preload="none"></audio><p class="audio-message">Odkaz na WAV ukázku bude doplněn.</p></div>
+        <div class="actions"><a class="btn disabled" href="#" aria-disabled="true">ZIP bude doplněn</a><button class="more" type="button" aria-expanded="false">Více o knize +</button></div>
+        <div class="details"><strong>O knize</strong><p>Obsah a další informace budou doplněny v rozhraní.</p><strong>Zvuková ukázka</strong><p>Samostatný soubor WAV bude doplněn.</p></div>
+      </div>
+    </article>
+
+    <article class="card" data-author="terry" data-title="Zloděj času" data-search="zloděj času terry pratchett">
+      <div class="cover" style="background-image:linear-gradient(145deg,#57565b,#181819)">
+        <div class="cover-label">Obálka bude doplněna</div><div class="cover-text"><div class="cover-author">Terry Pratchett</div><h3>Zloděj času</h3></div>
+      </div>
+      <div class="card-body">
+        <div class="meta"><span>Úžasná Zeměplocha</span><span>Zvuková ukázka</span></div><p class="summary">Stručný obsah knihy bude doplněn v rozhraní.</p>
+        <div class="player"><button class="play" type="button" aria-label="Otevřít přehrávač">▶</button><div class="track"><div class="trackline"><span></span></div><div class="track-meta"><span class="time">Ukázka bude doplněna</span><span class="length">30 min*</span></div></div></div>
+        <div class="audio-panel"><audio controls preload="none"></audio><p class="audio-message">Odkaz na WAV ukázku bude doplněn.</p></div>
+        <div class="actions"><a class="btn disabled" href="#" aria-disabled="true">ZIP bude doplněn</a><button class="more" type="button" aria-expanded="false">Více o knize +</button></div>
+        <div class="details"><strong>O knize</strong><p>Obsah a další informace budou doplněny v rozhraní.</p><strong>Zvuková ukázka</strong><p>Samostatný soubor WAV bude doplněn.</p></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="author" data-section="jonas">
+  <div class="author-heading"><h2>Jonas Jonasson</h2><span>Romány · humor</span></div>
+  <div class="grid">
+    <article class="card" data-author="jonas" data-title="Stoletý stařík" data-search="stoletý stařík jonas jonasson">
+      <div class="cover" style="background-image:linear-gradient(145deg,#62594d,#191817)">
+        <div class="cover-label">Obálka bude doplněna</div><div class="cover-text"><div class="cover-author">Jonas Jonasson</div><h3>Stoletý stařík</h3></div>
+      </div>
+      <div class="card-body">
+        <div class="meta"><span>Román</span><span>Zvuková ukázka</span></div><p class="summary">Stručný obsah knihy bude doplněn v rozhraní.</p>
+        <div class="player"><button class="play" type="button" aria-label="Otevřít přehrávač">▶</button><div class="track"><div class="trackline"><span></span></div><div class="track-meta"><span class="time">Ukázka bude doplněna</span><span class="length">30 min*</span></div></div></div>
+        <div class="audio-panel"><audio controls preload="none"></audio><p class="audio-message">Odkaz na WAV ukázku bude doplněn.</p></div>
+        <div class="actions"><a class="btn disabled" href="#" aria-disabled="true">ZIP bude doplněn</a><button class="more" type="button" aria-expanded="false">Více o knize +</button></div>
+        <div class="details"><strong>O knize</strong><p>Obsah a další informace budou doplněny v rozhraní.</p><strong>Zvuková ukázka</strong><p>Samostatný soubor WAV bude doplněn.</p></div>
+      </div>
+    </article>
+    <article class="card" data-author="jonas" data-title="Další titul" data-search="další titul jonas jonasson">
+      <div class="cover" style="background-image:linear-gradient(145deg,#4f514d,#171817)">
+        <div class="cover-label">Nový záznam</div><div class="cover-text"><div class="cover-author">Jonas Jonasson</div><h3>Další titul</h3></div>
+      </div>
+      <div class="card-body"><div class="meta"><span>Katalog se rozšíří</span><span>Brzy</span></div><p class="summary">Další kniha bude doplněna v rozhraní.</p><p style="font:12px Arial,sans-serif;color:var(--muted);margin:0">Obálka · popis · ukázka · ZIP</p></div>
+    </article>
+  </div>
+</section>
+<div id="empty" class="empty">Žádné knihy neodpovídají hledání.</div>
+
+<footer>
+  <section><div class="kicker">Podpora</div><h2>Pomozte knihovně růst.</h2><p>Dobrovolné příspěvky pomáhají s rozvojem projektu. QR kód bude doplněn v rozhraní.</p><div class="qr">QR KÓD<br>BUDE DOPLNĚN</div></section>
+  <section><div class="kicker">Kontakt</div><h2>Připomínky a zprávy</h2><p>Kontaktní e-mail bude doplněn v rozhraní.</p><a class="email" href="#" aria-disabled="true">E-mail bude doplněn ↗</a></section>
+  <div class="note">* Délka ukázky je orientační a bude odpovídat skutečnému souboru. Odkazy na ukázky, obálky a další ZIP archivy budou doplněny. První tlačítko ZIP už obsahuje dodaný odkaz na Google Drive.</div>
+</footer>
+</div>
+<script>
+(() => {
+  const cards = [...document.querySelectorAll('.card')];
+  const search = document.getElementById('search');
+  let filter = 'all';
+
+  document.querySelectorAll('.more').forEach(button => {
+    button.addEventListener('click', () => {
+      const card = button.closest('.card');
+      const expanded = card.classList.toggle('expanded');
+      button.setAttribute('aria-expanded', String(expanded));
+      button.textContent = expanded ? 'Méně −' : 'Více o knize +';
+    });
+  });
+
+  document.querySelectorAll('.play').forEach(button => {
+    button.addEventListener('click', () => {
+      const card = button.closest('.card');
+      const panel = card.querySelector('.audio-panel');
+      const audio = panel.querySelector('audio');
+      panel.classList.toggle('open');
+      if (!audio.getAttribute('src')) {
+        panel.querySelector('.audio-message').textContent =
+          'Ukázka bude doplněna. Po vložení adresy WAV bude možné přehrávat a posouvat zvuk přímo zde.';
+      }
+      button.textContent = panel.classList.contains('open') ? '×' : '▶';
+      button.setAttribute('aria-label', panel.classList.contains('open') ? 'Zavřít přehrávač' : 'Otevřít přehrávač');
+    });
+  });
+
+  document.querySelectorAll('.btn.disabled').forEach(link => {
+    link.addEventListener('click', event => event.preventDefault());
+  });
+
+  function apply() {
+    const query = search.value.trim().toLocaleLowerCase('cs');
+    let shown = 0;
+    document.querySelectorAll('.author').forEach(section => {
+      let sectionShown = 0;
+      section.querySelectorAll('.card').forEach(card => {
+        const matchesFilter = filter === 'all' || card.dataset.author === filter;
+        const text = (card.dataset.search || card.dataset.title || '').toLocaleLowerCase('cs');
+        const visible = matchesFilter && (!query || text.includes(query));
+        card.hidden = !visible;
+        if (visible) { shown++; sectionShown++; }
+      });
+      section.hidden = sectionShown === 0;
+    });
+    document.getElementById('empty').style.display = shown ? 'none' : 'block';
+  }
+
+  document.querySelectorAll('.filter').forEach(button => {
+    button.addEventListener('click', () => {
+      filter = button.dataset.filter;
+      document.querySelectorAll('.filter').forEach(item => item.classList.toggle('active', item === button));
+      apply();
+    });
+  });
+  search.addEventListener('input', apply);
+})();
+</script>
+</body>
+</html>
