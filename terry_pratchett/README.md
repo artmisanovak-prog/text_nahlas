@@ -24,3 +24,31 @@ https://drive.google.com/file/d/1IaU-Smgb9wWFuBNXhsyn-3-rz9LQEp3C/view?usp=drive
 
 - magický prazdroj 
 https://drive.google.com/file/d/1QY7CLmOxY_OqUEQbm5AiuZjuxoJA5ipD/view?usp=drivesdk
+
+- tezke melodicno
+https://drive.google.com/file/d/1kx_0-MlbMKJj1LUqPn7e0LjAdiySflSV/view?usp=drivesdk
+
+- mali bohove
+https://drive.google.com/file/d/1cZTU7IBNTAyHUl977n5zmBwZQXXbyMjj/view?usp=drivesdk
+
+- nadelat prachy
+https://drive.google.com/file/d/1Kzsq4l1IXp3vcYIoLBgJZFS-68T9qQ20/view?usp=drivesdk
+
+- nohy z jilu
+
+- zajimave casy
+
+- klobouk s oblohou
+https://drive.google.com/file/d/1QGkXM_PquCfsnpWdyS0aQ0YtYEXRQjys/view?usp=drivesdk
+
+- obleknu si pulnoc
+
+- uzasny mauric a jeho vzdelani hlodavci
+
+- carpe jugulum
+
+- dobra znameni
+
+- pastyrska koruna
+
+- buch
