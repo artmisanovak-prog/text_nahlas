@@ -5,7 +5,7 @@ https://drive.google.com/file/d/1NbuTYHVP7c7hEDWEKLh2QmfxplJUNUV4/view?usp=drive
 https://drive.google.com/file/d/1l7kufrMd6PmvhtdouV7j4WYjh7wNINLO/view?usp=drivesdk
 
 - pod parou 
-https://drive.google.com/file/d/1l7kufrMd6PmvhtdouV7j4WYjh7wNINLO/view?usp=drivesdk
+https://drive.google.com/file/d/1F-zbr_wJqM_8VA9y_9IfI7G5-dRy6cn0/view?usp=drivesdk
 
 - pyramidy 
 https://drive.google.com/file/d/1nqZVdvvNrsIfOezH1SHir35_X4G7KaYc/view?usp=drivesdk
